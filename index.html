@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Ziksu (Angry Birdie) ❤️</title>
+    <title>For Ziksuuuu (Angry Birdie) ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
         /* --- 1. GLOBAL STYLES --- */
@@ -34,7 +35,88 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- 2. HERO SECTION (Galaxy) --- */
+        /* --- 2. PASSWORD OVERLAY (NEW) --- */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #090a0f; /* Match the galaxy dark theme */
+            z-index: 10000; /* Sit on top of everything */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        .login-box {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .login-box h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+        }
+
+        input[type="password"] {
+            padding: 12px 20px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            outline: none;
+            text-align: center;
+            width: 200px;
+            transition: 0.3s;
+        }
+
+        input[type="password"]:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .enter-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 30px;
+            font-size: 1.1rem;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .enter-btn:hover { transform: scale(1.05); background: #ff4757; }
+
+        .error-msg {
+            color: #ff4757;
+            margin-top: 15px;
+            display: none; /* Hidden by default */
+            font-size: 0.9rem;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* --- 3. HERO SECTION (Galaxy) --- */
         #hero-section {
             height: 100vh;
             width: 100%;
@@ -121,7 +203,7 @@
             backdrop-filter: blur(5px);
         }
 
-        /* --- 3. LOVE CONTENT (Page 2) --- */
+        /* --- 4. LOVE CONTENT (Page 2) --- */
         #love-content {
             display: none;
             opacity: 0;
@@ -266,7 +348,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            display: flex;
+            display: none; /* Hidden until login */
             justify-content: center;
             align-items: center;
             font-size: 2rem;
@@ -276,6 +358,17 @@
             transition: 0.3s;
         }
         .music-btn:hover { transform: scale(1.1); }
+        
+        /* Mobile Tweaks */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 1rem; }
+            .gif-container { width: 150px; height: 150px; }
+            .btn-container { flex-direction: column; gap: 15px; width: 100%; }
+            button { width: 80%; margin: 0 auto; }
+            .letter { padding: 20px; font-size: 1.2rem; }
+            .section { padding: 40px 10px; }
+        }
     </style>
 </head>
 <body>
@@ -287,6 +380,15 @@
         <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
     </audio>
 
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>When is my Wifey's Birthday?</h2>
+            <input type="password" id="passwordInput" placeholder="Enter Date...">
+            <button class="enter-btn" onclick="checkPassword()">Enter ❤️</button>
+            <p class="error-msg" id="errorMsg">Wrong name! Try "130802" 😉</p>
+        </div>
+    </div>
+
     <div id="hero-section">
         <div class="gif-container">
             <img 
@@ -295,8 +397,8 @@
                 alt="Cute Bear"
             >
         </div>
-        <h1>Ziksuuuuu, will you be my Valentine?</h1>
-        <p class="subtitle">Meri honi wali biwi... 🌹🌹🌹</p>
+        <h1>Ziksuuuu, will you be my Valentine?</h1>
+        <p class="subtitle">Meri Honi Wali Biwi... 🌹🌹🌹</p>
         
         <div class="btn-container">
             <button id="yesBtn">Yes! 💖</button>
@@ -337,7 +439,6 @@
     </div>
 
     <script>
-        /* --- CORE LOGIC --- */
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
         const hero = document.getElementById('hero-section');
@@ -345,9 +446,42 @@
         const musicBtn = document.getElementById('musicBtn');
         const bgMusic = document.getElementById('bgMusic');
         
-        // --- 1. SMART "NO" BUTTON ---
+        // --- 1. PASSWORD CHECKER ---
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            const overlay = document.getElementById('login-overlay');
+            const error = document.getElementById('errorMsg');
+
+            // CHANGE PASSWORD HERE
+            if (input === "130802" || input === "130802") {
+                // Success
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 1000);
+                
+                // Play Music Automatically
+                bgMusic.play().then(() => {
+                    musicBtn.style.display = "flex";
+                    musicBtn.innerHTML = "⏸️";
+                }).catch(e => {
+                    console.log("Audio blocked: " + e);
+                    musicBtn.style.display = "flex";
+                });
+            } else {
+                // Fail
+                error.style.display = 'block';
+            }
+        }
+
+        // --- 2. SMART "NO" BUTTON ---
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('click', moveButton);
+        // Mobile touch support for No Button
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
 
         function moveButton() {
             const width = window.innerWidth;
@@ -355,40 +489,32 @@
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
             
-            // Random position with padding
-            const newX = Math.random() * (width - btnWidth - 100) + 50;
-            const newY = Math.random() * (height - btnHeight - 100) + 50;
+            const newX = Math.random() * (width - btnWidth - 50) + 25;
+            const newY = Math.random() * (height - btnHeight - 50) + 25;
 
             noBtn.style.position = 'fixed';
             noBtn.style.left = `${newX}px`;
             noBtn.style.top = `${newY}px`;
         }
 
-        // --- 2. THE "YES" TRANSITION ---
+        // --- 3. THE "YES" TRANSITION ---
         yesBtn.addEventListener('click', () => {
-            // Change Background to Sunset
             document.body.classList.add('sunset-mode');
-
-            // Fade out Hero
             hero.style.opacity = "0";
             hero.style.transform = "translateY(-100vh)";
             
-            // Show content
             setTimeout(() => {
                 hero.style.display = "none";
                 content.style.display = "block";
                 setTimeout(() => { content.style.opacity = "1"; }, 100);
                 
-                // SWITCH CANVAS MODE TO HEARTS
                 currentMode = 'hearts';
-                particles = []; // Clear stars
+                particles = []; 
             }, 800);
-
-            playMusic();
         });
 
-        // --- 3. TYPEWRITER EFFECT ---
-        const fullText = "Meri pyaari Jaan,\n\nI am so incredibly glad to have you in my life. You are my Precious Penguin🐧, my happiness, and my everything.\n\nFrom the moment I met you, my life became brighter. Every laugh, every smile, and every moment we share is a memory I treasure.\n\nThank you for being you. I love you more than words can explain.\n\nForever yours,\nYour Valentine\nNumaan💖";
+        // --- 4. TYPEWRITER EFFECT ---
+        const fullText = "Meri Pyaari Jaan,\n\nI am so incredibly glad to have you in my life. You are my Precious Penguin🐧, my happiness, and my everything.\n\nFrom the moment I met you, my life became brighter. Every laugh, every smile, and every moment we share is a memory I treasure.\n\nThank you for being you. I love you more than words can explain.\n\nForever yours,\nYour Valentine\nNumaan💖";
         
         function openLetter() {
             const envelope = document.getElementById('envelope');
@@ -400,10 +526,9 @@
                 envelope.style.display = 'none';
                 letter.classList.add('visible');
                 
-                // Start Typing
                 let i = 0;
                 const typeEl = document.getElementById('type-text');
-                const speed = 40; // Typing speed
+                const speed = 40; 
 
                 function type() {
                     if (i < fullText.length) {
@@ -423,24 +548,18 @@
             }, 600);
         }
 
-        // --- 4. MUSIC ---
-        function playMusic() {
-            if (bgMusic.paused) {
-                bgMusic.play().catch(e => console.log("Auto-play blocked"));
-                musicBtn.innerHTML = "⏸️";
-            }
-        }
+        // --- 5. MUSIC ---
         musicBtn.addEventListener('click', () => {
             if (bgMusic.paused) { bgMusic.play(); musicBtn.innerHTML = "⏸️"; }
             else { bgMusic.pause(); musicBtn.innerHTML = "🎵"; }
         });
 
-        /* --- 5. GALAXY & HEART ENGINE --- */
+        /* --- 6. GALAXY & HEART ENGINE --- */
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
-        let currentMode = 'stars'; // Start with stars
+        let currentMode = 'stars'; 
         let mouseX = 0, mouseY = 0;
 
         function resize() {
@@ -453,18 +572,16 @@
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            // Add stardust trail on move
             if (currentMode === 'stars') {
                 for(let i=0; i<3; i++) particles.push(new Stardust(mouseX, mouseY));
             }
         });
 
-        // CLASSES
         class Star {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.size = Math.random() * 1.5; // Small realistic stars
+                this.size = Math.random() * 1.5;
                 this.opacity = Math.random();
                 this.twinkleSpeed = Math.random() * 0.02 + 0.005;
             }
@@ -488,7 +605,7 @@
                 this.speedX = (Math.random() - 0.5) * 1.5;
                 this.speedY = (Math.random() - 0.5) * 1.5;
                 this.life = 1;
-                this.color = `hsl(${Math.random()*40 + 240}, 100%, 80%)`; // Blue/Purple glow
+                this.color = `hsl(${Math.random()*40 + 240}, 100%, 80%)`;
             }
             update() {
                 this.x += this.speedX;
@@ -508,14 +625,12 @@
         class RedHeart {
             constructor() {
                 this.x = Math.random() * width;
-                this.y = -20; // Start above screen
+                this.y = -20;
                 this.size = Math.random() * 20 + 10;
                 this.speed = Math.random() * 2 + 1;
-                this.color = `hsla(340, 100%, 50%, ${Math.random() * 0.6 + 0.4})`; // Varying red opacity
+                this.color = `hsla(340, 100%, 50%, ${Math.random() * 0.6 + 0.4})`;
             }
-            update() {
-                this.y += this.speed;
-            }
+            update() { this.y += this.speed; }
             draw() {
                 ctx.fillStyle = this.color;
                 ctx.font = `${this.size}px Arial`;
@@ -523,23 +638,21 @@
             }
         }
 
-        // INIT STARS (DENSE MILKY WAY)
-        // INCREASED TO 1000 STARS
-        for(let i=0; i<1000; i++) particles.push(new Star());
+        // Optimization for mobile vs desktop stars
+        const isMobile = window.innerWidth < 768;
+        const starCount = isMobile ? 300 : 1000;
+        for(let i=0; i<starCount; i++) particles.push(new Star());
 
-        // ANIMATION LOOP
         function animate() {
             ctx.clearRect(0, 0, width, height);
 
             if (currentMode === 'stars') {
-                // Draw Nebula Effect (Subtle glow)
                 const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width);
                 gradient.addColorStop(0, "rgba(75, 0, 130, 0.1)");
                 gradient.addColorStop(1, "rgba(0,0,0,0)");
                 ctx.fillStyle = gradient;
                 ctx.fillRect(0,0,width,height);
 
-                // Update Stars & Stardust
                 for (let i = 0; i < particles.length; i++) {
                     particles[i].update();
                     particles[i].draw();
@@ -549,11 +662,10 @@
                     }
                 }
                 // Maintain star count
-                if (particles.filter(p => p instanceof Star).length < 1000) {
+                if (particles.filter(p => p instanceof Star).length < starCount) {
                     particles.push(new Star());
                 }
             } else {
-                // RED HEARTS RAIN MODE
                 if (Math.random() < 0.15) particles.push(new RedHeart()); 
                 
                 for (let i = 0; i < particles.length; i++) {
@@ -565,11 +677,9 @@
                     }
                 }
             }
-            
             requestAnimationFrame(animate);
         }
         animate();
-
     </script>
 </body>
 </html>
